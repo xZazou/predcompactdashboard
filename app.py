@@ -1,34 +1,37 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 st.set_page_config(page_title="Analyse Talc", layout="wide")
 
-st.title("🧪 Dashboard : Détection du Talc dans les Cosmétiques")
-st.write("Cet outil analyse la composition des produits pour prédire la présence de Talc.")
+st.title("🧪 Dashboard : Détection du Talc")
 
-# Chargement des données directement depuis ton lien GitHub
+# Lien vers ton fichier Excel
 url = "https://raw.githubusercontent.com/gevargas/predcompact/main/375_cosmetikwatch_19_08_2025.xlsx"
 
 @st.cache_data
 def load_data():
-    return pd.read_excel(url)
+    data = pd.read_excel(url)
+    # Cette ligne magique enlève les espaces et les erreurs de noms
+    data.columns = data.columns.str.strip()
+    return data
 
-df = load_data()
+try:
+    df = load_data()
 
-# --- INTERFACE ---
-col1, col2 = st.columns(2)
-
-with col1:
     st.subheader("Aperçu des données")
-    st.write(f"Nombre de produits analysés : {len(df)}")
-    st.dataframe(df[['Nom du produit', 'Marque', 'Catégorie']].head(10))
+    st.write(f"Nombre de produits : {len(df)}")
+    
+    # On affiche toutes les colonnes disponibles pour ne pas se tromper
+    st.dataframe(df.head(10))
 
-with col2:
-    st.subheader("Répartition par catégorie")
+    # Graphique simple
+    st.subheader("Répartition des produits")
+    # On prend la 4ème colonne (souvent la catégorie) pour le graphique
+    col_graph = df.columns[3] 
     fig, ax = plt.subplots()
-    df['Catégorie'].value_counts().plot(kind='pie', autopct='%1.1f%%', ax=ax)
+    df[col_graph].value_counts().head(10).plot(kind='bar', ax=ax)
     st.pyplot(fig)
 
-st.success("L'application est prête !")
+except Exception as e:
+    st.error(f"Erreur de lecture du fichier : {e}")
