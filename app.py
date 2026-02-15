@@ -14,7 +14,7 @@ st.markdown("""
     h1 { color: #ff4b4b; font-family: 'Trebuchet MS'; }
     .stMetric { background-color: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     </style>
-    """, unsafe_allow_stdio=True)
+    """, unsafe_allow_html=True)
 
 # --- CHARGEMENT ---
 url = "https://raw.githubusercontent.com/gevargas/predcompact/main/375_cosmetikwatch_19_08_2025.xlsx"
